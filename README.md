@@ -2,8 +2,12 @@
 
 github public activity to rss feed.
 
+
 **NOTE: this is useless as it exists on github already...like https://github.com/azimut.atom**
+
+
 **TODO: this only returns starred or created repos**
+
 
 ## Usage
 
