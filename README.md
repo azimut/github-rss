@@ -3,7 +3,7 @@
 github public activity to rss feed.
 
 
-**NOTE: this is useless as it exists on github already...like https://github.com/azimut.atom**
+**NOTE: while you can access your own private feed (https://github.com/azimut.private.atom?token=??????), you can't afaik access others people feeds**
 
 
 **TODO: this only returns starred or created repos**
