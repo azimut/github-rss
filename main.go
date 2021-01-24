@@ -26,7 +26,7 @@ func main() {
 			feed.Items = append(feed.Items, item)
 		}
 	}
-
+	feed.Created = feed.Items[0].Created
 	atom, err := feed.ToAtom()
 	if err != nil {
 		log.Fatal(err)
