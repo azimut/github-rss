@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"github.com/google/go-github/github"
@@ -11,7 +12,7 @@ import (
 )
 
 func main() {
-	login := "azimut"
+	login := os.Args[1]
 
 	events, err := getEvents(login)
 	if err != nil {
