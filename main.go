@@ -65,6 +65,10 @@ func parse(event *github.Event) *feeds.Item {
 }
 
 func feedWatch(e *github.Event) *feeds.Item {
+	payload := e.Payload().(*github.WatchEvent)
+	if *payload.Action != "started" {
+		return nil
+	}
 	return &feeds.Item{
 		Title: fmt.Sprintf("%s starred %s",
 			*e.Actor.Login,
@@ -76,6 +80,10 @@ func feedWatch(e *github.Event) *feeds.Item {
 }
 
 func feedCreate(e *github.Event) *feeds.Item {
+	payload := e.Payload().(*github.CreateEvent)
+	if *payload.RefType != "repository" {
+		return nil
+	}
 	return &feeds.Item{
 		Title: fmt.Sprintf("%s created %s",
 			*e.Actor.Login,
