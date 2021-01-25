@@ -10,7 +10,8 @@ github public activity to rss feed.
 
 
 ## Usage
-
+* `github-rss` gets public user activity received events
+* `gitorg-rss` gets a list of repos created by an organization
 ``` shell
 > github-rss azimut
 <?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom">
