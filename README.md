@@ -2,15 +2,8 @@
 
 github public activity to rss feed.
 
-
-**NOTE: while you can access your own private feed (https://github.com/azimut.private.atom?token=??????), you can't afaik access others people feeds**
-
-
-**TODO: this only returns starred or created repos**
-
-
 ## Usage
-* `github-rss` gets public user activity received events
+* `github-rss` gets public user activity received events (TODO: only returns starred and created repos)
 * `gitorg-rss` gets a list of repos created by an organization
 ``` shell
 > github-rss azimut
