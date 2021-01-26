@@ -21,7 +21,6 @@ func main() {
 
 	feed := newFeed(login)
 	for _, event := range events {
-		nnn
 		items := parse(event)
 		if items != nil {
 			for _, item := range items {
