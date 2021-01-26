@@ -98,7 +98,7 @@ func feedWatch(e *github.Event) *feeds.Item {
 		return nil
 	}
 	return &feeds.Item{
-		Title: fmt.Sprintf("%s starred %s",
+		Title: fmt.Sprintf("⭐ %s starred %s",
 			*e.Actor.Login,
 			*e.Repo.Name),
 		Link: &feeds.Link{Href: fmt.Sprintf("https://github.com/%s",
