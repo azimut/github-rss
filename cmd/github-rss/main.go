@@ -21,9 +21,12 @@ func main() {
 
 	feed := newFeed(login)
 	for _, event := range events {
-		item := parse(event)
-		if item != nil {
-			feed.Items = append(feed.Items, item)
+		nnn
+		items := parse(event)
+		if items != nil {
+			for _, item := range items {
+				feed.Items = append(feed.Items, item)
+			}
 		}
 	}
 	feed.Created = feed.Items[0].Created
@@ -54,14 +57,34 @@ func getEvents(login string) ([]*github.Event, error) {
 	return events, nil
 }
 
-func parse(event *github.Event) *feeds.Item {
+func parse(event *github.Event) (items []*feeds.Item) {
 	switch *event.Type {
 	case "WatchEvent":
-		return feedWatch(event)
+		items = append(items, feedWatch(event))
 	case "CreateEvent":
-		return feedCreate(event)
+		items = append(items, feedCreate(event))
+	case "PushEvent":
+		items = append(items, feedPush(event)...)
 	}
-	return nil
+	return items
+}
+
+func feedPush(e *github.Event) (items []*feeds.Item) {
+	payload := e.Payload().(*github.PushEvent)
+	for _, commit := range payload.Commits {
+		item := &feeds.Item{
+			Title: fmt.Sprintf("%s pushed to %s",
+				*e.Actor.Login,
+				*e.Repo.Name),
+			Link: &feeds.Link{Href: fmt.Sprintf("https://github.com/%s/commit/%s",
+				*e.Repo.Name,
+				*commit.SHA)},
+			Description: *commit.Message,
+			Created:     *e.CreatedAt,
+		}
+		items = append(items, item)
+	}
+	return items
 }
 
 func feedWatch(e *github.Event) *feeds.Item {

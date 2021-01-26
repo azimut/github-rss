@@ -3,7 +3,7 @@
 github public activity to rss feed.
 
 ## Usage
-* `github-rss` gets public user activity received events (TODO: only returns starred and created repos)
+* `github-rss` gets public user activity received events (TODO: only returns starred, created and pushed repos, returning a description of each repo would involve too many request and a rate limit would be hit soon enough)
 * `gitorg-rss` gets a list of repos created by an organization
 ``` shell
 > github-rss azimut
