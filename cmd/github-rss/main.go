@@ -59,9 +59,15 @@ func getEvents(login string) ([]*github.Event, error) {
 func parse(event *github.Event) (items []*feeds.Item) {
 	switch *event.Type {
 	case "WatchEvent":
-		items = append(items, feedWatch(event))
+		item := feedWatch(event)
+		if item != nil {
+			items = append(items, item)
+		}
 	case "CreateEvent":
-		items = append(items, feedCreate(event))
+		item := feedCreate(event)
+		if item != nil {
+			items = append(items, item)
+		}
 	case "PushEvent":
 		items = append(items, feedPush(event)...)
 	}
@@ -83,7 +89,7 @@ func feedPush(e *github.Event) (items []*feeds.Item) {
 		}
 		items = append(items, item)
 	}
-	return items
+	return
 }
 
 func feedWatch(e *github.Event) *feeds.Item {
