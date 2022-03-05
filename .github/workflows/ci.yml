@@ -21,7 +21,7 @@ jobs:
       - run: make
 
       - uses: goreleaser/goreleaser-action@v2
-        # if: startsWith(github.ref, 'refs/tags/')
+        if: startsWith(github.ref, 'refs/tags/')
         with:
           args: release --rm-dist
         env:
