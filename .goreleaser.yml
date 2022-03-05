@@ -11,9 +11,9 @@ builds:
   goos:   [ linux ]
   goarch: [ amd64 ]
   flags:  [ -v ]
-- id: "github-rss"
-  binary: github-rss
-  main: ./cmd/github-rss
-  goos:   [ linux ]
-  goarch: [ amd64 ]
-  flags:  [ -v ]
+# - id: "github-rss"
+#   binary: github-rss
+#   main: ./cmd/github-rss
+#   goos:   [ linux ]
+#   goarch: [ amd64 ]
+#   flags:  [ -v ]
