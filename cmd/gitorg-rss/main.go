@@ -47,9 +47,7 @@ func newFeed(login string) *feeds.Feed {
 func getRepos(org string) ([]*github.Repository, error) {
 	client := github.NewClient(nil)
 	opts := &github.RepositoryListByOrgOptions{
-		Direction: "desc",
-		Sort:      "created",
-		Type:      "public",
+		Type: "public",
 	}
 	repos, _, err := client.Repositories.ListByOrg(
 		context.Background(), org, opts)
