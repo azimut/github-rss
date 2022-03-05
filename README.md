@@ -3,9 +3,15 @@
 github public activity to rss feed.
 
 ## Usage
-* `github-rss` gets public user activity received events (TODO: only returns starred, created and pushed repos, returning a description of each repo would involve too many request and a rate limit would be hit soon enough)
-* `gitorg-rss` gets a list of repos created by an organization
+
+* `gitorg-rss <GITHUBB_ORG>` gets the repos created by an organization
+* `gitissue-rss <GITHUB_ISSUE_URL>` gets comments made on an issue
+* `github-rss <GITHUB_USER>` gets public user activity received events (TODO: only returns starred, created and pushed repos, returning a description of each repo would involve too many request and a rate limit would be hit soon enough)
+
+
 ``` shell
+> gitorg-rss EpicGames
+> gitissue-rss https://github.com/azimut/github-rss/issues/1
 > github-rss azimut
 <?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom">
   <title>azimut github activity</title>
