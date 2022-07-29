@@ -25,6 +25,7 @@ type UrlParts struct {
 func main() {
 	if len(os.Args) != 2 {
 		fmt.Fprintf(os.Stderr, "%s: missing url parameter\n", os.Args[0])
+		fmt.Printf("%s <GITHUB_ISSUE_URL>", os.Args[0])
 		os.Exit(1)
 	}
 	urlParts, err := newUrlParts(os.Args[1])

@@ -12,14 +12,19 @@ import (
 )
 
 func main() {
-	login := os.Args[1]
+	if len(os.Args) != 2 {
+		fmt.Fprintf(os.Stderr, "%s: missing organization parameter\n", os.Args[0])
+		fmt.Printf("%s <GITHUB_ORGANIZATION>", os.Args[0])
+		os.Exit(1)
+	}
+	org := os.Args[1]
 
-	repos, err := getRepos(login)
+	repos, err := getRepos(org)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	feed := newFeed(login)
+	feed := newFeed(org)
 	for _, repo := range repos {
 		item := parse(repo)
 		if item != nil {

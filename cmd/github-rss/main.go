@@ -12,14 +12,19 @@ import (
 )
 
 func main() {
-	login := os.Args[1]
+	if len(os.Args) != 2 {
+		fmt.Fprintf(os.Stderr, "%s: missing user parameter\n", os.Args[0])
+		fmt.Printf("%s <GITHUB_USER>", os.Args[0])
+		os.Exit(1)
+	}
+	user := os.Args[1]
 
-	events, err := getEvents(login)
+	events, err := getEvents(user)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	feed := newFeed(login)
+	feed := newFeed(user)
 	for _, event := range events {
 		items := parse(event)
 		if items != nil {
