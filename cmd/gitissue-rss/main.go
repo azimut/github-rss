@@ -6,6 +6,7 @@ import (
 	"os"
 	"regexp"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/google/go-github/github"
@@ -14,7 +15,7 @@ import (
 
 var re = `https://github.com/(?P<owner>[a-zA-Z_\.-]+)/(?P<repo>[a-zA-Z_\.-]+)/issues/(?P<issue>\d+)`
 
-type urlParts struct {
+type UrlParts struct {
 	url   string
 	owner string
 	repo  string
@@ -22,36 +23,40 @@ type urlParts struct {
 }
 
 func main() {
-	parsedUrl, err := parseUrl(os.Args[1])
+	if len(os.Args) != 2 {
+		fmt.Fprintf(os.Stderr, "%s: missing url parameter\n", os.Args[0])
+		os.Exit(1)
+	}
+	urlParts, err := newUrlParts(os.Args[1])
 	if err != nil {
 		panic(err)
 	}
-	comments, err := fetchComments(*parsedUrl)
+	comments, err := fetchComments(*urlParts)
 	if err != nil {
 		panic(err)
 	}
-	feed := newFeed(*parsedUrl)
+	feed := newFeed(*urlParts)
 	for _, comment := range comments {
 		item := newItem(comment)
 		if item != nil {
 			feed.Items = append(feed.Items, item)
 		}
 	}
-	atom, err := feed.ToAtom()
+	atom, err := feed.ToRss()
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println(atom)
 }
 
-func parseUrl(url string) (*urlParts, error) {
+func newUrlParts(url string) (*UrlParts, error) {
 	var r = regexp.MustCompile(re)
 	match := r.FindStringSubmatch(url)
 	issue, err := strconv.Atoi(match[3])
 	if err != nil {
 		return nil, err
 	}
-	return &urlParts{
+	return &UrlParts{
 		url:   url,
 		owner: match[1],
 		repo:  match[2],
@@ -59,7 +64,7 @@ func parseUrl(url string) (*urlParts, error) {
 	}, nil
 }
 
-func fetchComments(u urlParts) ([]*github.IssueComment, error) {
+func fetchComments(u UrlParts) ([]*github.IssueComment, error) {
 	client := github.NewClient(nil)
 	comments, _, err := client.Issues.ListComments(
 		context.Background(),
@@ -73,7 +78,7 @@ func fetchComments(u urlParts) ([]*github.IssueComment, error) {
 	return comments, nil
 }
 
-func newFeed(u urlParts) *feeds.Feed {
+func newFeed(u UrlParts) *feeds.Feed {
 	return &feeds.Feed{
 		Title:   fmt.Sprintf("Issue activity %s/%s/%d", u.owner, u.repo, u.issue),
 		Link:    &feeds.Link{Href: u.url},
@@ -85,7 +90,7 @@ func newItem(repo *github.IssueComment) *feeds.Item {
 	return &feeds.Item{
 		Title:       *repo.User.Login + " added a comment",
 		Link:        &feeds.Link{Href: *repo.HTMLURL},
-		Description: *repo.Body,
+		Description: strings.ReplaceAll(repo.GetBody(), "\n", "<br />"),
 		Created:     *repo.CreatedAt,
 	}
 }
