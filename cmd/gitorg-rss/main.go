@@ -24,14 +24,17 @@ func main() {
 		log.Fatal(err)
 	}
 
-	feed := newFeed(org)
+	feed := newRSSFeed(org)
+
 	for _, repo := range repos {
 		item := parse(repo)
-		if item != nil {
-			feed.Items = append(feed.Items, item)
-		}
+		feed.Items = append(feed.Items, &item)
 	}
-	feed.Created = feed.Items[0].Created
+
+	if len(feed.Items) > 0 {
+		feed.Created = feed.Items[0].Created
+	}
+
 	atom, err := feed.ToAtom()
 	if err != nil {
 		log.Fatal(err)
@@ -39,14 +42,12 @@ func main() {
 	fmt.Println(atom)
 }
 
-func newFeed(login string) *feeds.Feed {
-	now := time.Now()
-	feed := &feeds.Feed{
-		Title:   fmt.Sprintf("%s github org activity", login),
-		Link:    &feeds.Link{Href: fmt.Sprintf("https://github.com/%s", login)},
-		Created: now,
+func newRSSFeed(org string) feeds.Feed {
+	return feeds.Feed{
+		Title:   fmt.Sprintf("%s github org activity", org),
+		Link:    &feeds.Link{Href: fmt.Sprintf("https://github.com/%s", org)},
+		Created: time.Now(),
 	}
-	return feed
 }
 
 func getRepos(org string) ([]*github.Repository, error) {
@@ -62,7 +63,7 @@ func getRepos(org string) ([]*github.Repository, error) {
 	return repos, nil
 }
 
-func parse(repo *github.Repository) *feeds.Item {
+func parse(repo *github.Repository) feeds.Item {
 	language := ""
 	if repo.Language != nil {
 		language = *repo.Language
@@ -71,7 +72,7 @@ func parse(repo *github.Repository) *feeds.Item {
 	if repo.Description != nil {
 		description = *repo.Description
 	}
-	return &feeds.Item{
+	return feeds.Item{
 		Title: fmt.Sprintf("%s created %s (%s)",
 			*repo.Owner.Login,
 			*repo.Name,
