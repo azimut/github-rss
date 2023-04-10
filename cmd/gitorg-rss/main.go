@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/google/go-github/github"
+	"github.com/google/go-github/v51/github"
 	"github.com/gorilla/feeds"
 )
 
@@ -53,10 +53,10 @@ func newRSSFeed(org string) feeds.Feed {
 func getRepos(org string) ([]*github.Repository, error) {
 	client := github.NewClient(nil)
 	opts := &github.RepositoryListByOrgOptions{
-		Type: "public",
+		Type:      "public",
+		Direction: "desc",
 	}
-	repos, _, err := client.Repositories.ListByOrg(
-		context.Background(), org, opts)
+	repos, _, err := client.Repositories.ListByOrg(context.Background(), org, opts)
 	if err != nil {
 		return nil, err
 	}
