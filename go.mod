@@ -3,7 +3,6 @@ module github.com/azimut/github-rss
 go 1.20
 
 require (
-	github.com/google/go-github v17.0.0+incompatible
 	github.com/google/go-github/v51 v51.0.0
 	github.com/gorilla/feeds v1.1.1
 )
