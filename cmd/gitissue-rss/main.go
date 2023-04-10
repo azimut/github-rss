@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/google/go-github/github"
+	"github.com/google/go-github/v51/github"
 	"github.com/gorilla/feeds"
 )
 
@@ -32,16 +32,14 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	comments, err := fetchComments(*urlParts)
+	comments, err := fetchComments(urlParts)
 	if err != nil {
 		panic(err)
 	}
-	feed := newFeed(*urlParts)
+	feed := newFeed(urlParts)
 	for _, comment := range comments {
 		item := newItem(comment)
-		if item != nil {
-			feed.Items = append(feed.Items, item)
-		}
+		feed.Items = append(feed.Items, &item)
 	}
 	atom, err := feed.ToRss()
 	if err != nil {
@@ -50,14 +48,14 @@ func main() {
 	fmt.Println(atom)
 }
 
-func newUrlParts(url string) (*UrlParts, error) {
+func newUrlParts(url string) (UrlParts, error) {
 	var r = regexp.MustCompile(re)
 	match := r.FindStringSubmatch(url)
 	issue, err := strconv.Atoi(match[3])
 	if err != nil {
-		return nil, err
+		return UrlParts{}, err
 	}
-	return &UrlParts{
+	return UrlParts{
 		url:   url,
 		owner: match[1],
 		repo:  match[2],
@@ -79,19 +77,19 @@ func fetchComments(u UrlParts) ([]*github.IssueComment, error) {
 	return comments, nil
 }
 
-func newFeed(u UrlParts) *feeds.Feed {
-	return &feeds.Feed{
+func newFeed(u UrlParts) feeds.Feed {
+	return feeds.Feed{
 		Title:   fmt.Sprintf("Issue activity %s/%s/%d", u.owner, u.repo, u.issue),
 		Link:    &feeds.Link{Href: u.url},
 		Created: time.Now(),
 	}
 }
 
-func newItem(repo *github.IssueComment) *feeds.Item {
-	return &feeds.Item{
+func newItem(repo *github.IssueComment) feeds.Item {
+	return feeds.Item{
 		Title:       *repo.User.Login + " added a comment",
 		Link:        &feeds.Link{Href: *repo.HTMLURL},
 		Description: strings.ReplaceAll(repo.GetBody(), "\n", "<br />"),
-		Created:     *repo.CreatedAt,
+		Created:     repo.CreatedAt.Time,
 	}
 }

@@ -77,7 +77,7 @@ func toRSSItem(repo *github.Repository) feeds.Item {
 			*repo.Owner.Login,
 			*repo.Name,
 			language),
-		Link:        &feeds.Link{Href: "https://github.com/" + *repo.FullName},
+		Link:        &feeds.Link{Href: *repo.HTMLURL},
 		Description: description,
 		Created:     repo.CreatedAt.Time,
 	}
