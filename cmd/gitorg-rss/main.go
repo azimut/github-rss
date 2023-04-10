@@ -27,7 +27,7 @@ func main() {
 	feed := newRSSFeed(org)
 
 	for _, repo := range repos {
-		item := parse(repo)
+		item := toRSSItem(repo)
 		feed.Items = append(feed.Items, &item)
 	}
 
@@ -44,8 +44,8 @@ func main() {
 
 func newRSSFeed(org string) feeds.Feed {
 	return feeds.Feed{
-		Title:   fmt.Sprintf("%s github org activity", org),
-		Link:    &feeds.Link{Href: fmt.Sprintf("https://github.com/%s", org)},
+		Title:   org + " github org activity",
+		Link:    &feeds.Link{Href: "https://github.com/" + org},
 		Created: time.Now(),
 	}
 }
@@ -63,7 +63,7 @@ func getRepos(org string) ([]*github.Repository, error) {
 	return repos, nil
 }
 
-func parse(repo *github.Repository) feeds.Item {
+func toRSSItem(repo *github.Repository) feeds.Item {
 	language := ""
 	if repo.Language != nil {
 		language = *repo.Language
@@ -77,8 +77,7 @@ func parse(repo *github.Repository) feeds.Item {
 			*repo.Owner.Login,
 			*repo.Name,
 			language),
-		Link: &feeds.Link{Href: fmt.Sprintf("https://github.com/%s",
-			*repo.FullName)},
+		Link:        &feeds.Link{Href: "https://github.com/" + *repo.FullName},
 		Description: description,
 		Created:     repo.CreatedAt.Time,
 	}
