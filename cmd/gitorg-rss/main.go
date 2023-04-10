@@ -64,19 +64,18 @@ func getRepos(org string) ([]*github.Repository, error) {
 }
 
 func toRSSItem(repo *github.Repository) feeds.Item {
-	language := ""
-	if repo.Language != nil {
-		language = *repo.Language
+	var title string
+	if repo.Language == nil {
+		title = fmt.Sprintf("%s created %s", *repo.Owner.Login, *repo.Name)
+	} else {
+		title = fmt.Sprintf("%s created %s (%s)", *repo.Owner.Login, *repo.Name, *repo.Language)
 	}
-	description := ""
+	var description string
 	if repo.Description != nil {
 		description = *repo.Description
 	}
 	return feeds.Item{
-		Title: fmt.Sprintf("%s created %s (%s)",
-			*repo.Owner.Login,
-			*repo.Name,
-			language),
+		Title:       title,
 		Link:        &feeds.Link{Href: *repo.HTMLURL},
 		Description: description,
 		Created:     repo.CreatedAt.Time,
